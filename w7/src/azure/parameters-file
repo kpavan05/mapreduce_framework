@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "mapreduce"
+        },
+        "sshKey": {
+            "value": null
+        },
+        "vmNamePrefix": {
+            "value": "mr"
+        },
+        "nicNamePrefix": {
+            "value": "mrnic"
+        },
+        "publicIPAddressNamePrefix": {
+            "value": "mrip"
+        },
+        "networkSecurityGroupName": {
+            "value": "mrNsg"
+        },
+        "vnetName": {
+            "value": "mrvnet"
+        },
+        "dnsNamePrefix": {
+          "value": "mrdns"
+        },
+        "numberOfInstances": {
+            "value": 2
+        },
+        "storageAccountName": {
+            "value": "mstuiop"
+        }
+    }
+}

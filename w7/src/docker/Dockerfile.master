@@ -1,0 +1,38 @@
+FROM ubuntu:latest
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+RUN apt-get update \
+  && apt-get install -y \
+    ca-certificates \
+    zookeeper \
+    libzookeeper-mt2 \
+    zookeeperd \
+    zookeeper-bin \
+    libzookeeper-mt-dev \
+    # sudo \
+    # wget \
+    # dnsutils \
+    libboost-all-dev \
+  && rm -rf /var/lib/apt/lists/*
+  # libboost-all-dev adds about 700MB to the image size...
+
+# add the master, worker, and compiled source to docker
+
+WORKDIR /srv/project
+RUN mkdir logs
+
+# src folder is way too big to copy over. So the relevant files were copied to install_artifacts by ./build
+COPY build/install_artifacts /usr/local/lib
+
+# Utility scripts
+COPY src/master/tail /srv/project
+
+# Files
+COPY src/files/testdata_1.txt /srv/project/
+COPY ["src/files/William Wordsworth___The Prose Works of William Wordsworth.txt", "/srv/project/"]
+COPY ["src/files/John Bunyan___The Works of John Bunyan.txt", "/srv/project/"]
+
+# Executable
+COPY build/src/master/master /srv/project/master
+CMD ["./master"]
+# CMD ["tail", "-f", "/dev/null"]

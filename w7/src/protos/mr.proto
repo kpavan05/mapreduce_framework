@@ -1,0 +1,105 @@
+
+// Starter Proto file, feel free to change name of the file
+syntax = "proto3";
+package mr;
+
+
+// The service definition.
+service MapReduceService {
+    rpc ExchangeInfo (MasterInfo) returns (WorkerInfo) {};
+
+    rpc mapTask (MapperInput) returns (IntermediateResult) {} ;
+    rpc reduceTask (ReducerInput) returns (FinalResult) {} ;
+    rpc getWorkerStatus (NoParam) returns (WorkerStatus) {} ;
+
+    rpc Ping(NoParam) returns (NoParam) {};
+}
+
+service ReplicationService {
+  rpc sendCheckPointData (NoParam) returns (CheckPointData) {};
+  rpc pushCheckPointData (CheckPointData) returns (NoParam) {};
+}
+
+message NoParam {}
+
+// The request message containing the user's name.
+message MasterInfo {
+  string name = 1;
+  string connectionstring = 2;
+  string containername = 3;
+}
+
+// The response message containing the greetings
+message WorkerInfo {
+  string message = 1;
+}
+
+// The request message containing the input file name
+
+message ShardTuple {
+    string blobname = 1;
+    int32 startoffset = 2;
+    int32 endoffset = 3;
+}
+
+message MapperInput {
+    int32 npartition = 1;
+    int32 shard_id = 2;
+    repeated ShardTuple stuples = 3;
+    string req_id = 4;
+}
+
+message IntermediateData {
+  string blobname = 1;
+}
+
+message IntermediateResult {
+    string containername = 1;
+    repeated IntermediateData blobs = 2;
+}
+
+message ReducerInput {
+    string req_id = 1;
+    string containername = 2;
+    int32 reducer_id = 3;
+    repeated IntermediateData blobs = 10;
+}
+
+message FinalResult {
+  string blobname = 1;
+  string containername = 2;
+}
+
+message WorkerStatus {
+    int32 status = 1;
+}
+
+message JobStatus {
+  int32 shard_id = 1;
+  string int_container = 2;
+  repeated IntermediateData blob_list = 3;
+}
+
+message FileShardSet {
+  int32 shard_id = 1;
+  repeated ShardTuple stuples = 2;
+}
+
+message ReduceJobStatus {
+  int32 jobid = 1;
+  string out_container = 2;
+}
+
+message CheckPointData {
+  int32 req_id = 1;
+  int32 n_mappers = 2;
+  int32 n_reducers = 3;
+  string in_container = 4;
+  repeated FileShardSet shard_list = 5;
+  repeated JobStatus job_list = 6;
+  repeated ReduceJobStatus  reduce_job_list = 7;
+}
+
+
+
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tail -n +0 -F logs/master.INFO

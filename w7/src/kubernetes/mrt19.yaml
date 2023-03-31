@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mrservice
+  labels:
+    app: mr19
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: mr19
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-deployment
+  labels:
+    app: mr19
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mr19
+  template:
+    metadata:
+      labels:
+        app: mr19
+    spec:
+      containers:
+      - name: master
+        imagePullPolicy: Always
+        image: acrt19mr.azurecr.io/master:latest
+        ports:
+        - containerPort: 8000
+          name: http-server
+        - containerPort: 50052
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /srv/project/leader_config.txt
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: mr19
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mr19
+  template:
+    metadata:
+      labels:
+        app: mr19
+    spec:
+      containers:
+      - name: worker
+        imagePullPolicy: Always
+        image: acrt19mr.azurecr.io/worker:latest
+        ports:
+        - containerPort: 50051
+        env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP

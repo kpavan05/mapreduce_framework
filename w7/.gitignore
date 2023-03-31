@@ -1,0 +1,16 @@
+/build
+
+# Large files for testing
+John Bunyan___The Works of John Bunyan.txt
+William Wordsworth___The Prose Works of William Wordsworth.txt
+
+# Files created in root directory when running locally
+/logs/*
+/master
+/worker
+/*.py
+/leader_config.txt
+/sh-*
+/int_*
+/kv-*
+/out_*

@@ -1,0 +1,51 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y ca-certificates zookeeper libzookeeper-mt2 zookeeperd zookeeper-bin libzookeeper-mt-dev 
+
+# Define the rest of your dockerfile here
+RUN apt-get update && apt-get install -y \
+  autoconf \
+  automake \
+  wget \
+  build-essential \
+  check \
+  checkinstall \
+  curl \
+  g++ \
+  git \
+  libtool \
+  make \
+  pkg-config \
+  unzip \
+  openssl \
+  libssl-dev \
+  sudo \
+  && apt-get clean
+
+RUN apt-get remove -y cmake
+
+SHELL ["/bin/bash", "-c"]
+ARG user=team19
+ARG home=/home/$user
+RUN adduser --disabled-password --gecos '' $user
+RUN adduser $user sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER $user
+
+WORKDIR $home
+COPY conservator.tar.gz .
+COPY workshop6-c.tar.gz .
+COPY --chown=$user build_docker.sh .
+COPY --chown=$user install_docker.sh .
+
+RUN chmod +x install_docker.sh
+RUN ./install_docker.sh
+
+RUN chmod +x build_docker.sh
+COPY worker.cc .
+RUN cp $home/worker.cc $home/src/workshop6-c/src/worker/worker.cc
+RUN ./build_docker.sh
+
+
+WORKDIR $home/src/workshop6-c/src/cmake/build
+CMD ["./worker"]

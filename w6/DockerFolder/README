@@ -1,0 +1,11 @@
+DockerFolder contains all the files that needs to ported to docker container to build images.
+This folder serves as Docker context when building image.
+
+1. cd DockerFolder 
+2. RUN copy.sh to copy master.cc and worker.cc to DockerFolder
+
+Build docker images:
+3. sudo docker build -t mr-master -f DockerFile.master .
+4. sudo docker build -t mr-worker -f DockerFile.worker . 
+
+

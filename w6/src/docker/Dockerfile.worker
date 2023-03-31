@@ -1,0 +1,17 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y ca-certificates zookeeper libzookeeper-mt2 zookeeperd zookeeper-bin libzookeeper-mt-dev sudo wget dnsutils
+
+# Define the rest of your dockerfile here
+
+# add the master, worker, and compiled source to docker
+WORKDIR /srv/project
+RUN mkdir logs
+
+# src folder is way too big to copy over. So the relevant files were copied to install_artifacts by ./build
+COPY build/install_artifacts /usr/local/lib
+
+COPY build/worker /srv/project/worker
+COPY src/worker/tail /srv/project
+CMD ["./worker"]
+# CMD ["tail", "-f", "/dev/null"]
