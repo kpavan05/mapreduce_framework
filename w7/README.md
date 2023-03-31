@@ -1,13 +1,3 @@
-# Workshop 7: Map Reduce File System
-
-See workshop 7 [REPORT](REPORT.md)  
-Workshop 7 reference commit: 5dc815b076ba48470ae69ca7205dd0525313e1ae  
-Workshop 8 is also in this folder. Go to its [README](../w6/docs/workshop8.md) and [REPORT](REPORT_W8.md).  
-Workshop 9 is also in this folder. Go to its [README](../w6/docs/workshop9.md).  
-
-[Module README](../w6/README.md) has miscellaneous comments  
-
-
 ## Demo  
 1. Explain [design](./design.md)  
     - Filesystem interfaces used (< 2 minutes)  
